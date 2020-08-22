@@ -35,7 +35,7 @@ class State:
 
     def reset(self, prices, offset):
         assert isinstance(prices, data.Prices)
-        assert offset >= self.bars_count-1
+        assert offset >= self.bars_count - 1
         self.have_position = False
         self.open_price = 0.0
         self._prices = prices
@@ -47,7 +47,7 @@ class State:
         if self.volumes:
             return 4 * self.bars_count + 1 + 1,
         else:
-            return 3*self.bars_count + 1 + 1,
+            return 3 * self.bars_count + 1 + 1,
 
     def encode(self):
         """
@@ -55,7 +55,7 @@ class State:
         """
         res = np.ndarray(shape=self.shape, dtype=np.float32)
         shift = 0
-        for bar_idx in range(-self.bars_count+1, 1):
+        for bar_idx in range(-self.bars_count + 1, 1):
             ofs = self._offset + bar_idx
             res[shift] = self._prices.high[ofs]
             shift += 1
@@ -108,7 +108,7 @@ class State:
         self._offset += 1
         prev_close = close
         close = self._cur_close()
-        done |= self._offset >= self._prices.close.shape[0]-1
+        done |= self._offset >= self._prices.close.shape[0] - 1
 
         if self.have_position and not self.reward_on_close:
             reward += 100.0 * (close / prev_close - 1.0)
@@ -120,6 +120,7 @@ class State1D(State):
     """
     State with shape suitable for 1D convolution
     """
+
     @property
     def shape(self):
         if self.volumes:
@@ -129,8 +130,8 @@ class State1D(State):
 
     def encode(self):
         res = np.zeros(shape=self.shape, dtype=np.float32)
-        start = self._offset-(self.bars_count-1)
-        stop = self._offset+1
+        start = self._offset - (self.bars_count - 1)
+        stop = self._offset + 1
         res[0] = self._prices.high[start:stop]
         res[1] = self._prices.low[start:stop]
         res[2] = self._prices.close[start:stop]
@@ -141,7 +142,7 @@ class State1D(State):
             dst = 3
         if self.have_position:
             res[dst] = 1.0
-            res[dst+1] = self._cur_close() / self.open_price - 1.0
+            res[dst + 1] = self._cur_close() / self.open_price - 1.0
         return res
 
 
@@ -182,7 +183,7 @@ class StocksEnv(gym.Env):
             print(bars)
             # raise Exception(222)
             offset = self.np_random.choice(
-                prices.high.shape[0]-bars*10) + bars
+                prices.high.shape[0] - bars * 10) + bars
         else:
             offset = bars
         self._state.reset(prices, offset)
@@ -211,8 +212,10 @@ class StocksEnv(gym.Env):
 
     @classmethod
     def from_dir(cls, data_dir, **kwargs):
-        prices = {
-            file: data.load_relative(file)
-            for file in data.price_files(data_dir)
-        }
+        print(kwargs)
+        prices = {}
+        for file in data.price_files(data_dir):
+            price = data.load_relative(file)
+            if price.high.shape[0] > bars_count * 10:
+                prices.setdefault(file, price)
         return StocksEnv(prices, **kwargs)
