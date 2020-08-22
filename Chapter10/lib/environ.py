@@ -216,6 +216,11 @@ class StocksEnv(gym.Env):
         prices = {}
         for file in data.price_files(data_dir):
             price = data.load_relative(file)
-            if price.high.shape[0] > bars_count * 10:
+            if "bars_count" in kwargs:
+                bars_count = kwargs["bars_count"]
+                if price.high.shape[0] > bars_count * 10:
+                    prices.setdefault(file, price)
+            else:
+
                 prices.setdefault(file, price)
         return StocksEnv(prices, **kwargs)
