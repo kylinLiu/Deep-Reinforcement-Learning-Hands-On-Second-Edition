@@ -75,7 +75,7 @@ if __name__ == "__main__":
         raise RuntimeError("No data to train on")
 
     print(env._prices.keys)
-    raise Exception(222)
+    # raise Exception(222)
 
     env = gym.wrappers.TimeLimit(env, max_episode_steps=1000)
     val_data = {"YNDX": data.load_relative(val_path)}

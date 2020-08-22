@@ -178,6 +178,8 @@ class StocksEnv(gym.Env):
         prices = self._prices[self._instrument]
         bars = self._state.bars_count
         if self.random_ofs_on_reset:
+            print(prices.high.shape)
+            print(bars)
             offset = self.np_random.choice(
                 prices.high.shape[0]-bars*10) + bars
         else:
