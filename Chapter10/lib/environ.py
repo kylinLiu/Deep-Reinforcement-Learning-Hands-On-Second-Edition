@@ -179,8 +179,8 @@ class StocksEnv(gym.Env):
         prices = self._prices[self._instrument]
         bars = self._state.bars_count
         if self.random_ofs_on_reset:
-            print(prices.high.shape)
-            print(bars)
+            # print(prices.high.shape)
+            # print(bars)
             # raise Exception(222)
             offset = self.np_random.choice(
                 prices.high.shape[0] - bars * 10) + bars
@@ -212,7 +212,7 @@ class StocksEnv(gym.Env):
 
     @classmethod
     def from_dir(cls, data_dir, **kwargs):
-        print(kwargs)
+        # print(kwargs)
         prices = {}
         for file in data.price_files(data_dir):
             price = data.load_relative(file)
