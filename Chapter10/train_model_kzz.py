@@ -54,6 +54,7 @@ if __name__ == "__main__":
     saves_path.mkdir(parents=True, exist_ok=True)
 
     data_path = pathlib.Path(args.data)
+    print(data_path)
     val_path = pathlib.Path(args.val)
 
     if args.year is not None or data_path.is_file():
@@ -72,6 +73,9 @@ if __name__ == "__main__":
             data_path, bars_count=BARS_COUNT)
     else:
         raise RuntimeError("No data to train on")
+
+    print(env._prices.keys)
+    raise Exception(222)
 
     env = gym.wrappers.TimeLimit(env, max_episode_steps=1000)
     val_data = {"YNDX": data.load_relative(val_path)}
