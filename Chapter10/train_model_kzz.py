@@ -22,7 +22,7 @@ except:
 SAVES_DIR = pathlib.Path(save_dir)
 print(SAVES_DIR)
 STOCKS = "data/kzz_SH110044.csv"
-VAL_STOCKS = "data/kzz_SZ123056.csv"
+VAL_STOCKS = "data_val/kzz_SZ123056.csv"
 
 BATCH_SIZE = 32
 BARS_COUNT = 10
