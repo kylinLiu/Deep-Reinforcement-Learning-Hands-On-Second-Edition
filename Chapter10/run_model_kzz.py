@@ -39,7 +39,7 @@ if __name__ == "__main__":
     SAVES_DIR = pathlib.Path(save_dir)
     saves_path = SAVES_DIR / f"simple-{args.name}"
     net.load_state_dict(torch.load(
-                "{}/{}".format(saves_path, args.model),, map_location=lambda storage, loc: storage))
+                "{}/{}".format(saves_path, args.model), map_location=lambda storage, loc: storage))
 
     obs = env.reset()
     start_price = env._state._cur_close()
