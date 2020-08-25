@@ -68,7 +68,7 @@ class State:
                 res[shift] = self._prices.volume[ofs]
                 shift += 1
 
-            res[shift] = self._prices.chng[ofs]
+            res[shift] = self._prices.chg[ofs]
             shift += 1
             res[shift] = self._prices.percent[ofs]
             shift += 1
@@ -150,7 +150,7 @@ class State1D(State):
             dst = 4
         else:
             dst = 3
-        res[dst] = self._prices.chng[start:stop]
+        res[dst] = self._prices.chg[start:stop]
         res[dst + 1] = self._prices.percent[start:stop]
         res[dst + 2] = self._prices.turnoverrate[start:stop]
         res[dst + 3] = self._prices.amount[start:stop]
