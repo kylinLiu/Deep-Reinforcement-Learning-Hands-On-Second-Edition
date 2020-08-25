@@ -37,6 +37,12 @@ def read_csv(file_name, sep=',', filter_data=True, fix_open_price=False, relativ
                 try:
                     vals.append(float(row[idx]))
                 except:
+                    if row[idx] == 'False':
+                        row[idx] = 0.0
+                    elif row[idx] == 'True':
+                        row[idx] = 1.0
+                    else:
+                        row[idx] = None
 
                     vals.append(row[idx])
             # vals = list(row)
