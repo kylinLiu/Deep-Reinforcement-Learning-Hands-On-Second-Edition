@@ -10,6 +10,13 @@ from . import data
 DEFAULT_BARS_COUNT = 10
 DEFAULT_COMMISSION_PERC = 0.1
 
+csv_header = [
+    # 'DATE', 'TIME',
+    'amount', 'chg', 'close', 'close_diff', 'dea', 'dea_chng_pct', 'dif', 'dif_chng_pct',
+    'dif_cross_dea_above', 'dif_cross_dea_below', 'ema_12', 'ema_26', 'high', 'low', 'macd', 'macd_chng_pct',
+    'open', 'percent', 'pre_dea', 'pre_dif', 'pre_macd', 'pre_macd_chng_pct', 'rsi12', 'rsi24', 'rsi6',
+    'turnoverrate', 'volume', 'volume_chng', 'volume_diff']
+
 
 class Actions(enum.Enum):
     Skip = 0
@@ -45,10 +52,7 @@ class State:
     def shape(self):
         # [h, l, c] * bars + position_flag + rel_profit
 
-        if self.volumes:
-            return 8 * self.bars_count + 1 + 1,
-        else:
-            return 7 * self.bars_count + 1 + 1,
+        return len(csv_header) * self.bars_count + 1 + 1,
 
     def encode(self):
         """
@@ -58,24 +62,9 @@ class State:
         shift = 0
         for bar_idx in range(-self.bars_count + 1, 1):
             ofs = self._offset + bar_idx
-            res[shift] = self._prices.high[ofs]
-            shift += 1
-            res[shift] = self._prices.low[ofs]
-            shift += 1
-            res[shift] = self._prices.close[ofs]
-            shift += 1
-            if self.volumes:
-                res[shift] = self._prices.volume[ofs]
+            for k in csv_header:
+                res[shift] = getattr(self._prices, k)[ofs]
                 shift += 1
-
-            res[shift] = self._prices.chg[ofs]
-            shift += 1
-            res[shift] = self._prices.percent[ofs]
-            shift += 1
-            res[shift] = self._prices.turnoverrate[ofs]
-            shift += 1
-            res[shift] = self._prices.amount[ofs]
-            shift += 1
         res[shift] = float(self.have_position)
         shift += 1
         if not self.have_position:
@@ -142,21 +131,12 @@ class State1D(State):
         res = np.zeros(shape=self.shape, dtype=np.float32)
         start = self._offset - (self.bars_count - 1)
         stop = self._offset + 1
-        res[0] = self._prices.high[start:stop]
-        res[1] = self._prices.low[start:stop]
-        res[2] = self._prices.close[start:stop]
-        if self.volumes:
-            res[3] = self._prices.volume[start:stop]
-            dst = 4
-        else:
-            dst = 3
-        res[dst] = self._prices.chg[start:stop]
-        res[dst + 1] = self._prices.percent[start:stop]
-        res[dst + 2] = self._prices.turnoverrate[start:stop]
-        res[dst + 3] = self._prices.amount[start:stop]
+        idx = -1
+        for idx, k in csv_header:
+            res[idx] = getattr(self._prices, k)[start:stop]
         if self.have_position:
-            res[dst + 4] = 1.0
-            res[dst + 5] = self._cur_close() / self.open_price - 1.0
+            res[idx + 1] = 1.0
+            res[idx + 2] = self._cur_close() / self.open_price - 1.0
         return res
 
 
