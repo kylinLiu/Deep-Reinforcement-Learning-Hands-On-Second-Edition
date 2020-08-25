@@ -48,6 +48,7 @@ if __name__ == "__main__":
     parser.add_argument("--val", default=VAL_STOCKS, help="Validation data, default=" + VAL_STOCKS)
     parser.add_argument("-r", "--run", required=True, help="Run name")
     args = parser.parse_args()
+    # read config
     print(args)
     device = torch.device("cuda" if args.cuda else "cpu")
 
@@ -59,6 +60,7 @@ if __name__ == "__main__":
     print(data_path)
     val_path = pathlib.Path(args.val)
 
+    # create env
     if args.year is not None or data_path.is_file():
         if args.year is not None:
             stock_data = data.load_year_data(args.year)
@@ -76,15 +78,18 @@ if __name__ == "__main__":
     else:
         raise RuntimeError("No data to train on")
 
-    print(env._prices.keys)
+    # print(env._prices.keys)
     # raise Exception(222)
 
+    # val env
     env = gym.wrappers.TimeLimit(env, max_episode_steps=1000)
     val_data = {"YNDX": data.load_relative(val_path)}
     env_val = environ.StocksEnv(val_data, bars_count=BARS_COUNT)
 
+    # create net
     net = models.SimpleFFDQN(env.observation_space.shape[0],
                              env.action_space.n).to(device)
+    # load model
     if args.model:
         net.load_state_dict(
             torch.load(

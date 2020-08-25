@@ -44,10 +44,11 @@ class State:
     @property
     def shape(self):
         # [h, l, c] * bars + position_flag + rel_profit
+
         if self.volumes:
-            return 4 * self.bars_count + 1 + 1,
+            return 8 * self.bars_count + 1 + 1,
         else:
-            return 3 * self.bars_count + 1 + 1,
+            return 7 * self.bars_count + 1 + 1,
 
     def encode(self):
         """
@@ -66,6 +67,15 @@ class State:
             if self.volumes:
                 res[shift] = self._prices.volume[ofs]
                 shift += 1
+
+            res[shift] = self._prices.chng[ofs]
+            shift += 1
+            res[shift] = self._prices.percent[ofs]
+            shift += 1
+            res[shift] = self._prices.turnoverrate[ofs]
+            shift += 1
+            res[shift] = self._prices.amount[ofs]
+            shift += 1
         res[shift] = float(self.have_position)
         shift += 1
         if not self.have_position:
@@ -140,9 +150,13 @@ class State1D(State):
             dst = 4
         else:
             dst = 3
+        res[dst] = self._prices.chng[start:stop]
+        res[dst + 1] = self._prices.percent[start:stop]
+        res[dst + 2] = self._prices.turnoverrate[start:stop]
+        res[dst + 3] = self._prices.amount[start:stop]
         if self.have_position:
-            res[dst] = 1.0
-            res[dst + 1] = self._cur_close() / self.open_price - 1.0
+            res[dst + 4] = 1.0
+            res[dst + 5] = self._cur_close() / self.open_price - 1.0
         return res
 
 

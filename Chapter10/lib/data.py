@@ -4,8 +4,12 @@ import glob
 import numpy as np
 import collections
 
-
-Prices = collections.namedtuple('Prices', field_names=['open', 'high', 'low', 'close', 'volume'])
+Prices = collections.namedtuple(
+    'Prices',
+    field_names=[
+        'open', 'high', 'low', 'close', 'volume',
+        "chg", "percent", "turnoverrate", "amount",
+    ])
 
 
 def read_csv(file_name, sep=',', filter_data=True, fix_open_price=False):
@@ -14,20 +18,23 @@ def read_csv(file_name, sep=',', filter_data=True, fix_open_price=False):
         reader = csv.reader(fd, delimiter=sep)
         h = next(reader)
         if '<OPEN>' not in h and sep == ',':
-            return read_csv(file_name, ';')
-        indices = [h.index(s) for s in ('<OPEN>', '<HIGH>', '<LOW>', '<CLOSE>', '<VOL>')]
-        o, h, l, c, v = [], [], [], [], []
+            return read_csv(file_name, ';', filter_data=False)
+        indices = [h.index(s) for s in (
+            '<OPEN>', '<HIGH>', '<LOW>', '<CLOSE>', '<VOL>',
+            "chg", "percent", "turnoverrate", "amount",
+        )]
+        o, h, l, c, v, chg, percent, turnoverrate, amount = [], [], [], [], [], [], [], [], []
         count_out = 0
         count_filter = 0
         count_fixed = 0
         prev_vals = None
         for row in reader:
             vals = list(map(float, [row[idx] for idx in indices]))
-            if filter_data and all(map(lambda v: abs(v-vals[0]) < 1e-8, vals[:-1])):
+            if filter_data and all(map(lambda v: abs(v - vals[0]) < 1e-8, vals[:-1])):
                 count_filter += 1
                 continue
 
-            po, ph, pl, pc, pv = vals
+            po, ph, pl, pc, pv, pch, pp, pt, pa = vals
 
             # fix open price for current bar to match close price for the previous bar
             if fix_open_price and prev_vals is not None:
@@ -43,6 +50,10 @@ def read_csv(file_name, sep=',', filter_data=True, fix_open_price=False):
             h.append(ph)
             l.append(pl)
             v.append(pv)
+            chg.append(pch)
+            percent.append(pp)
+            turnoverrate.append(pt)
+            amount.append(pa)
             prev_vals = vals
     print("Read done, got %d rows, %d filtered, %d open prices adjusted" % (
         count_filter + count_out, count_filter, count_fixed))
@@ -50,7 +61,11 @@ def read_csv(file_name, sep=',', filter_data=True, fix_open_price=False):
                   high=np.array(h, dtype=np.float32),
                   low=np.array(l, dtype=np.float32),
                   close=np.array(c, dtype=np.float32),
-                  volume=np.array(v, dtype=np.float32))
+                  volume=np.array(v, dtype=np.float32),
+                  chg=np.array(chg, dtype=np.float32),
+                  percent=np.array(percent, dtype=np.float32),
+                  turnoverrate=np.array(turnoverrate, dtype=np.float32),
+                  amount=np.array(amount, dtype=np.float32), )
 
 
 def prices_to_relative(prices):
@@ -63,11 +78,14 @@ def prices_to_relative(prices):
     rh = (prices.high - prices.open) / prices.open
     rl = (prices.low - prices.open) / prices.open
     rc = (prices.close - prices.open) / prices.open
-    return Prices(open=prices.open, high=rh, low=rl, close=rc, volume=prices.volume)
+    return Prices(open=prices.open, high=rh, low=rl, close=rc, volume=prices.volume,
+                  chg=prices.chg, percent=prices.percent,
+                  turnoverrate=prices.turnoverrate, amount=prices.amount
+                  )
 
 
 def load_relative(csv_file):
-    return prices_to_relative(read_csv(csv_file))
+    return prices_to_relative(read_csv(csv_file, filter_data=False))
 
 
 def price_files(dir_name):
