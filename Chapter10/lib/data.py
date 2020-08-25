@@ -18,7 +18,7 @@ def read_csv(file_name, sep=',', filter_data=True, fix_open_price=False):
         reader = csv.reader(fd, delimiter=sep)
         h = next(reader)
         if '<OPEN>' not in h and sep == ',':
-            return read_csv(file_name, ';', filter_data=False)
+            return read_csv(file_name, ';', filter_data=filter_data)
         indices = [h.index(s) for s in (
             '<OPEN>', '<HIGH>', '<LOW>', '<CLOSE>', '<VOL>',
             "chg", "percent", "turnoverrate", "amount",
@@ -84,8 +84,8 @@ def prices_to_relative(prices):
                   )
 
 
-def load_relative(csv_file):
-    return prices_to_relative(read_csv(csv_file, filter_data=False))
+def load_relative(csv_file,filter_data=True):
+    return prices_to_relative(read_csv(csv_file, filter_data=filter_data))
 
 
 def price_files(dir_name):

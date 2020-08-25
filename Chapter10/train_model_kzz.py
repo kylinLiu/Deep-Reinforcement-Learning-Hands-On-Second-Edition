@@ -42,6 +42,7 @@ STATES_TO_EVALUATE = 1000
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--cuda", help="Enable cuda", default=False, action="store_true")
+    parser.add_argument("--fd", help="filter data", action="store_true")
     parser.add_argument("-m", "--model", help="Model file to load")
     parser.add_argument("--data", default=STOCKS, help=f"Stocks file or dir, default={STOCKS}")
     parser.add_argument("--year", type=int, help="Year to train on, overrides --data")
@@ -65,16 +66,16 @@ if __name__ == "__main__":
         if args.year is not None:
             stock_data = data.load_year_data(args.year)
         else:
-            stock_data = {"YNDX": data.load_relative(data_path)}
+            stock_data = {"YNDX": data.load_relative(data_path, filter_data=args.fd)}
         env = environ.StocksEnv(
             stock_data, bars_count=BARS_COUNT)
         env_tst = environ.StocksEnv(
             stock_data, bars_count=BARS_COUNT)
     elif data_path.is_dir():
         env = environ.StocksEnv.from_dir(
-            data_path, bars_count=BARS_COUNT)
+            data_path, filter_data=args.fd, bars_count=BARS_COUNT)
         env_tst = environ.StocksEnv.from_dir(
-            data_path, bars_count=BARS_COUNT)
+            data_path, filter_data=args.fd, bars_count=BARS_COUNT)
     else:
         raise RuntimeError("No data to train on")
 
@@ -83,7 +84,7 @@ if __name__ == "__main__":
 
     # val env
     env = gym.wrappers.TimeLimit(env, max_episode_steps=1000)
-    val_data = {"YNDX": data.load_relative(val_path)}
+    val_data = {"YNDX": data.load_relative(val_path, filter_data=args.fd)}
     env_val = environ.StocksEnv(val_data, bars_count=BARS_COUNT)
 
     # create net

@@ -225,11 +225,11 @@ class StocksEnv(gym.Env):
         return [seed1, seed2]
 
     @classmethod
-    def from_dir(cls, data_dir, **kwargs):
+    def from_dir(cls, data_dir, filter_data=True, **kwargs):
         # print(kwargs)
         prices = {}
         for file in data.price_files(data_dir):
-            price = data.load_relative(file)
+            price = data.load_relative(file, filter_data=filter_data)
             if "bars_count" in kwargs:
                 bars_count = kwargs["bars_count"]
                 if price.high.shape[0] > bars_count * 10:
