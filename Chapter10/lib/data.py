@@ -7,7 +7,8 @@ import collections
 csv_header = [
     # 'DATE', 'TIME',
     'amount', 'chg', 'close', 'close_diff', 'dea', 'dea_chng_pct', 'dif', 'dif_chng_pct',
-    'dif_cross_dea_above', 'dif_cross_dea_below', 'ema_12', 'ema_26', 'high', 'low', 'macd', 'macd_chng_pct',
+    # 'dif_cross_dea_above', 'dif_cross_dea_below',
+    'ema_12', 'ema_26', 'high', 'low', 'macd', 'macd_chng_pct',
     'open', 'percent', 'pre_dea', 'pre_dif', 'pre_macd', 'pre_macd_chng_pct', 'rsi12', 'rsi24', 'rsi6',
     # 'turnoverrate',
     'volume', 'volume_chng', 'volume_diff']
@@ -81,7 +82,7 @@ def read_csv(file_name, sep=',', filter_data=True, fix_open_price=False, relativ
             prev_vals = vals
     print("Read done, got %d rows, %d filtered, %d open prices adjusted" % (
         count_filter + count_out, count_filter, count_fixed))
-    kargs = {i: np.array(data_tmp[i], dtype=np.float32) for i in csv_header}
+    kargs = {i: np.array(data_tmp[i], dtype=np.float64) for i in csv_header}
     return Prices(**kargs)
 
 

@@ -13,7 +13,8 @@ DEFAULT_COMMISSION_PERC = 0.1
 csv_header = [
     # 'DATE', 'TIME',
     'amount', 'chg', 'close', 'close_diff', 'dea', 'dea_chng_pct', 'dif', 'dif_chng_pct',
-    'dif_cross_dea_above', 'dif_cross_dea_below', 'ema_12', 'ema_26', 'high', 'low', 'macd', 'macd_chng_pct',
+    # 'dif_cross_dea_above', 'dif_cross_dea_below', 
+    'ema_12', 'ema_26', 'high', 'low', 'macd', 'macd_chng_pct',
     'open', 'percent', 'pre_dea', 'pre_dif', 'pre_macd', 'pre_macd_chng_pct', 'rsi12', 'rsi24', 'rsi6',
     # 'turnoverrate',
     'volume', 'volume_chng', 'volume_diff']
@@ -59,7 +60,7 @@ class State:
         """
         Convert current state into numpy array.
         """
-        res = np.ndarray(shape=self.shape, dtype=np.float32)
+        res = np.ndarray(shape=self.shape, dtype=np.float64)
         shift = 0
         for bar_idx in range(-self.bars_count + 1, 1):
             ofs = self._offset + bar_idx
@@ -129,7 +130,7 @@ class State1D(State):
             return (5, self.bars_count)
 
     def encode(self):
-        res = np.zeros(shape=self.shape, dtype=np.float32)
+        res = np.zeros(shape=self.shape, dtype=np.float64)
         start = self._offset - (self.bars_count - 1)
         stop = self._offset + 1
         idx = -1
@@ -163,7 +164,7 @@ class StocksEnv(gym.Env):
         self.action_space = gym.spaces.Discrete(n=len(Actions))
         self.observation_space = gym.spaces.Box(
             low=-np.inf, high=np.inf,
-            shape=self._state.shape, dtype=np.float32)
+            shape=self._state.shape, dtype=np.float64)
         self.random_ofs_on_reset = random_ofs_on_reset
         self.seed()
 
