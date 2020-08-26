@@ -44,11 +44,13 @@ if __name__ == "__main__":
     parser.add_argument("--cuda", help="Enable cuda", default=False, action="store_true")
     parser.add_argument("--fd", help="filter data", action="store_true")
     parser.add_argument("-m", "--model", help="Model file to load")
+    parser.add_argument("-b", "--bars", type=int, default=50, help="Count of bars to feed into the model")
     parser.add_argument("--data", default=STOCKS, help=f"Stocks file or dir, default={STOCKS}")
     parser.add_argument("--year", type=int, help="Year to train on, overrides --data")
     parser.add_argument("--val", default=VAL_STOCKS, help="Validation data, default=" + VAL_STOCKS)
     parser.add_argument("-r", "--run", required=True, help="Run name")
     args = parser.parse_args()
+    BARS_COUNT = args.bars
     # read config
     print(args)
     device = torch.device("cuda" if args.cuda else "cpu")
