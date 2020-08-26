@@ -82,7 +82,7 @@ def read_csv(file_name, sep=',', filter_data=True, fix_open_price=False, relativ
             prev_vals = vals
     print("Read done, got %d rows, %d filtered, %d open prices adjusted" % (
         count_filter + count_out, count_filter, count_fixed))
-    kargs = {i: np.array(data_tmp[i], dtype=np.float64) for i in csv_header}
+    kargs = {i: np.array(data_tmp[i], dtype=np.float32) for i in csv_header}
     return Prices(**kargs)
 
 

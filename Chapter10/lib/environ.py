@@ -60,7 +60,7 @@ class State:
         """
         Convert current state into numpy array.
         """
-        res = np.ndarray(shape=self.shape, dtype=np.float64)
+        res = np.ndarray(shape=self.shape, dtype=np.float32)
         shift = 0
         for bar_idx in range(-self.bars_count + 1, 1):
             ofs = self._offset + bar_idx
@@ -130,7 +130,7 @@ class State1D(State):
             return (5, self.bars_count)
 
     def encode(self):
-        res = np.zeros(shape=self.shape, dtype=np.float64)
+        res = np.zeros(shape=self.shape, dtype=np.float32)
         start = self._offset - (self.bars_count - 1)
         stop = self._offset + 1
         idx = -1
@@ -164,7 +164,7 @@ class StocksEnv(gym.Env):
         self.action_space = gym.spaces.Discrete(n=len(Actions))
         self.observation_space = gym.spaces.Box(
             low=-np.inf, high=np.inf,
-            shape=self._state.shape, dtype=np.float64)
+            shape=self._state.shape, dtype=np.float32)
         self.random_ofs_on_reset = random_ofs_on_reset
         self.seed()
 
