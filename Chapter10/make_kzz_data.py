@@ -67,8 +67,8 @@ def get_kzz_miniute(symbol, db):
              chg, percent, turnoverrate, amount
              ]
         )
-    csv_file = "data_val/kzz_{}.csv".format(symbol)
-    # csv_file = "data/kzz_{}.csv".format(symbol)
+    # csv_file = "data_val/kzz_{}.csv".format(symbol)
+    csv_file = "data/kzz_{}.csv".format(symbol)
     with open(csv_file, "w", newline='') as f:
         writer = csv.writer(f)
         writer.writerow(csv_header)
@@ -121,17 +121,17 @@ stock_list = [
     'SZ128037', 'SZ128062']
 stock_list = [
                  "SH113586",
-                 "SH113581",
-                 "SH113575",
-                 "SZ128097",
-                 "SZ128108",
-                 "SH113585",
-                 "SH113571",
-                 "SH113565",
-                 "SZ123046",
-                 "SH113035",
+                 # "SH113581",
+                 # "SH113575",
+                 # "SZ128097",
+                 # "SZ128108",
+                 # "SH113585",
+                 # "SH113571",
+                 # "SH113565",
+                 # "SZ123046",
+                 # "SH113035",
                  # "SZ123056",
-                 # "SH113587",
+                 "SH113587",
                  # "SZ128115",
                  # "SZ123044",
                  # "SZ128112",
