@@ -15,7 +15,8 @@ csv_header = [
     'amount', 'chg', 'close', 'close_diff', 'dea', 'dea_chng_pct', 'dif', 'dif_chng_pct',
     'dif_cross_dea_above', 'dif_cross_dea_below', 'ema_12', 'ema_26', 'high', 'low', 'macd', 'macd_chng_pct',
     'open', 'percent', 'pre_dea', 'pre_dif', 'pre_macd', 'pre_macd_chng_pct', 'rsi12', 'rsi24', 'rsi6',
-    'turnoverrate', 'volume', 'volume_chng', 'volume_diff']
+    # 'turnoverrate',
+    'volume', 'volume_chng', 'volume_diff']
 
 
 class Actions(enum.Enum):
