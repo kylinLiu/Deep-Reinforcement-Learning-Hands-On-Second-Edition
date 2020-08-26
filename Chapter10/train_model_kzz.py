@@ -51,6 +51,7 @@ if __name__ == "__main__":
     parser.add_argument("-r", "--run", required=True, help="Run name")
     args = parser.parse_args()
     BARS_COUNT = args.bars
+    print("BARS_COUNT", BARS_COUNT)
     # read config
     print(args)
     device = torch.device("cuda" if args.cuda else "cpu")
