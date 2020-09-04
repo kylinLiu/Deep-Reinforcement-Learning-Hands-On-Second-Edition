@@ -7,12 +7,12 @@ from lib import environ, data, models
 import torch
 
 import matplotlib as mpl
+
 mpl.use("Agg")
 import matplotlib.pyplot as plt
 import pathlib
 
 EPSILON = 0.02
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -39,7 +39,7 @@ if __name__ == "__main__":
     SAVES_DIR = pathlib.Path(save_dir)
     saves_path = SAVES_DIR / f"simple-{args.name}"
     net.load_state_dict(torch.load(
-                "{}/{}".format(saves_path, args.model), map_location=lambda storage, loc: storage))
+        "{}/{}".format(saves_path, args.model), map_location=lambda storage, loc: storage))
 
     obs = env.reset()
     start_price = env._state._cur_close()
@@ -64,9 +64,12 @@ if __name__ == "__main__":
             print("%d: reward=%.3f" % (step_idx, total_reward))
         if done:
             break
-
+    print(len(rewards))
     plt.clf()
+    plt.subplot(2, 1, 1)  # 图一包含1行2列子图，当前画在第一行第一列图上
     plt.plot(rewards)
+    plt.subplot(2, 1, 2)  # 图一包含1行2列子图，当前画在第一行第一列图上
+    plt.plot(env._prices.close)
     plt.title("Total reward, data=%s" % args.name)
     plt.ylabel("Reward, %")
     plt.savefig("rewards-%s.png" % args.name)
