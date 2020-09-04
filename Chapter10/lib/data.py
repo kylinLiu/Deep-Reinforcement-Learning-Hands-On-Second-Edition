@@ -12,11 +12,12 @@ import collections
 #     'open', 'percent', 'pre_dea', 'pre_dif', 'pre_macd', 'pre_macd_chng_pct', 'rsi12', 'rsi24', 'rsi6',
 #     # 'turnoverrate',
 #     'volume', 'volume_chng', 'volume_diff']
-csv_header= ['amount', 'chg', 'close', 'close_diff', 'high', 'low', 'open', 'percent', 'volume', 'volume_chng', 'volume_diff']
+csv_header = ['amount', 'chg', 'close', 'close_diff', 'high', 'low', 'open', 'percent', 'volume', 'volume_chng',
+              'volume_diff']
 
 Prices = collections.namedtuple(
     'Prices',
-    field_names=csv_header)
+    field_names=csv_header + ["real_close"])
 
 
 def read_csv(file_name, sep=',', filter_data=True, fix_open_price=False, relative=False):
@@ -28,6 +29,7 @@ def read_csv(file_name, sep=',', filter_data=True, fix_open_price=False, relativ
         #     return read_csv(file_name, ';', filter_data=filter_data)
         indices = [h.index(s) for s in csv_header]
         data_tmp = {i: [] for i in csv_header}
+        data_tmp.update({"real_close": []})
         # o, h, l, c, v, chg, percent, turnoverrate, amount = [], [], [], [], [], [], [], [], []
         count_out = 0
         count_filter = 0
@@ -57,6 +59,7 @@ def read_csv(file_name, sep=',', filter_data=True, fix_open_price=False, relativ
             ph = vals[csv_header.index('high')]
             pl = vals[csv_header.index('low')]
             pc = vals[csv_header.index('close')]
+            data_tmp['real_close'].append(pc)
 
             # fix open price for current bar to match close price for the previous bar
             if fix_open_price and prev_vals is not None:
@@ -84,6 +87,7 @@ def read_csv(file_name, sep=',', filter_data=True, fix_open_price=False, relativ
     print("Read done, got %d rows, %d filtered, %d open prices adjusted" % (
         count_filter + count_out, count_filter, count_fixed))
     kargs = {i: np.array(data_tmp[i], dtype=np.float32) for i in csv_header}
+    kargs.update({"real_close": np.array(data_tmp["real_close"], dtype = np.float32)})
     return Prices(**kargs)
 
 

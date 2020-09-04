@@ -25,6 +25,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     prices = data.load_relative(args.data)
+    print(prices.close[-100:])
     env = environ.StocksEnv({"TEST": prices}, bars_count=args.bars, reset_on_close=False, commission=args.commission,
                             state_1d=args.conv, random_ofs_on_reset=False, reward_on_close=False, volumes=False)
     if args.conv:
@@ -69,7 +70,8 @@ if __name__ == "__main__":
     plt.subplot(2, 1, 1)  # 图一包含1行2列子图，当前画在第一行第一列图上
     plt.plot(rewards[-100:])
     plt.subplot(2, 1, 2)  # 图一包含1行2列子图，当前画在第一行第一列图上
-    plt.plot(list(env._prices.values())[0].close[-100:])
+    # print(list(env._prices.values())[0].close[-100:])
+    plt.plot(list(env._prices.values())[0].real_close[-100:])
     plt.title("Total reward, data=%s" % args.name)
     plt.ylabel("Reward, %")
     plt.savefig("rewards-%s.png" % args.name)
