@@ -67,9 +67,9 @@ if __name__ == "__main__":
     print(len(rewards))
     plt.clf()
     plt.subplot(2, 1, 1)  # 图一包含1行2列子图，当前画在第一行第一列图上
-    plt.plot(rewards)
+    plt.plot(rewards[-100:])
     plt.subplot(2, 1, 2)  # 图一包含1行2列子图，当前画在第一行第一列图上
-    plt.plot(list(env._prices.values())[0].close)
+    plt.plot(list(env._prices.values())[0].close[-100:])
     plt.title("Total reward, data=%s" % args.name)
     plt.ylabel("Reward, %")
     plt.savefig("rewards-%s.png" % args.name)
