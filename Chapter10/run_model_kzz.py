@@ -48,6 +48,7 @@ if __name__ == "__main__":
     total_reward = 0.0
     step_idx = 0
     rewards = []
+    actions = []
 
     while True:
         step_idx += 1
@@ -57,6 +58,7 @@ if __name__ == "__main__":
         if np.random.random() < EPSILON:
             action_idx = env.action_space.sample()
         action = environ.Actions(action_idx)
+        actions.append(action)
 
         obs, reward, done, _ = env.step(action_idx)
         total_reward += reward
@@ -67,11 +69,14 @@ if __name__ == "__main__":
             break
     print(len(rewards))
     plt.clf()
-    plt.subplot(2, 1, 1)  # 图一包含1行2列子图，当前画在第一行第一列图上
+    plt.subplot(3, 1, 1)  # 图一包含1行2列子图，当前画在第一行第一列图上
     plt.plot(rewards[-100:])
-    plt.subplot(2, 1, 2)  # 图一包含1行2列子图，当前画在第一行第一列图上
+    plt.subplot(3, 1, 2)  # 图一包含1行2列子图，当前画在第一行第一列图上
     # print(list(env._prices.values())[0].close[-100:])
     plt.plot(list(env._prices.values())[0].real_close[-100:])
+    plt.subplot(3, 1, 3)  # 图一包含1行2列子图，当前画在第一行第一列图上
+    # print(list(env._prices.values())[0].close[-100:])
+    plt.plot(actions[-100:])
     plt.title("Total reward, data=%s" % args.name)
     plt.ylabel("Reward, %")
     plt.savefig("rewards-%s.png" % args.name)
