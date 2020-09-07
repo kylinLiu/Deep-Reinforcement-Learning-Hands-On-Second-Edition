@@ -58,7 +58,7 @@ if __name__ == "__main__":
         if np.random.random() < EPSILON:
             action_idx = env.action_space.sample()
         action = environ.Actions(action_idx)
-        actions.append(action)
+        actions.append(action.value())
 
         obs, reward, done, _ = env.step(action_idx)
         total_reward += reward
