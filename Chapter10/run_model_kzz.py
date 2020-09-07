@@ -68,12 +68,27 @@ if __name__ == "__main__":
         if done:
             break
     print(len(rewards))
+    actions = actions[-100:]
+    closes = list(env._prices.values())[0].real_close[-100:]
+
+    buy_list = {'x': [], 'y': []}
+    sell_list = {'x': [], 'y': []}
+    for index,i in enumerate(actions):
+        if i ==1:
+            buy_list["y"].append(closes[index]["close"])
+            buy_list["x"].append(index)
+        if i ==2:
+            sell_list["y"].append(closes[index]["close"])
+            sell_list["x"].append(index)
     plt.clf()
     plt.subplot(3, 1, 1)  # 图一包含1行2列子图，当前画在第一行第一列图上
     plt.plot(rewards[-100:])
     plt.subplot(3, 1, 2)  # 图一包含1行2列子图，当前画在第一行第一列图上
     # print(list(env._prices.values())[0].close[-100:])
-    plt.plot(list(env._prices.values())[0].real_close[-100:])
+    plt.plot(closes)
+
+    plt.scatter(buy_list["x"], buy_list["y"], marker='x', color='red', s=40, label='First')
+    plt.scatter(sell_list["x"], sell_list["y"], marker='x', color='blue', s=40, label='First')
     plt.subplot(3, 1, 3)  # 图一包含1行2列子图，当前画在第一行第一列图上
     # print(list(env._prices.values())[0].close[-100:])
     plt.plot(actions[-100:])
