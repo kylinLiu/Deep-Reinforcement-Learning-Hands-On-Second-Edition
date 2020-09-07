@@ -68,8 +68,10 @@ if __name__ == "__main__":
         if done:
             break
     print(len(rewards))
-    actions = actions[-100:]
-    closes = list(env._prices.values())[0].real_close[-100:]
+    num = -100
+    rewards = rewards[num:]
+    actions = actions[num:]
+    closes = list(env._prices.values())[0].real_close[num:]
 
     buy_list = {'x': [], 'y': []}
     sell_list = {'x': [], 'y': []}
@@ -82,7 +84,7 @@ if __name__ == "__main__":
             sell_list["x"].append(index)
     plt.clf()
     plt.subplot(3, 1, 1)  # 图一包含1行2列子图，当前画在第一行第一列图上
-    plt.plot(rewards[-100:])
+    plt.plot(rewards)
     plt.subplot(3, 1, 2)  # 图一包含1行2列子图，当前画在第一行第一列图上
     # print(list(env._prices.values())[0].close[-100:])
     plt.plot(closes)
@@ -91,7 +93,7 @@ if __name__ == "__main__":
     plt.scatter(sell_list["x"], sell_list["y"], marker='x', color='blue', s=40, label='First')
     plt.subplot(3, 1, 3)  # 图一包含1行2列子图，当前画在第一行第一列图上
     # print(list(env._prices.values())[0].close[-100:])
-    plt.plot(actions[-100:])
+    plt.plot(actions)
     plt.title("Total reward, data=%s" % args.name)
     plt.ylabel("Reward, %")
     plt.savefig("rewards-%s.png" % args.name)
