@@ -75,10 +75,10 @@ if __name__ == "__main__":
     sell_list = {'x': [], 'y': []}
     for index,i in enumerate(actions):
         if i ==1:
-            buy_list["y"].append(closes[index]["close"])
+            buy_list["y"].append(closes[index])
             buy_list["x"].append(index)
         if i ==2:
-            sell_list["y"].append(closes[index]["close"])
+            sell_list["y"].append(closes[index])
             sell_list["x"].append(index)
     plt.clf()
     plt.subplot(3, 1, 1)  # 图一包含1行2列子图，当前画在第一行第一列图上
