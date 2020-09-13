@@ -136,7 +136,7 @@ class State:
         after_offset = pre_offset + 120
 
         close = real_closes[self._offset]
-        pre_closes = real_closes[pre_offset:self._offset+1]
+        pre_closes = real_closes[pre_offset:self._offset + 1]
         max_pre_close = max(pre_closes)
         max_pre_index = pre_closes.index(max_pre_close)
         print("max_pre_index", max_pre_index)
@@ -146,7 +146,7 @@ class State:
             min_pre_close = min(pre_closes[max_pre_index:])
         pre_reward = ((max_pre_close - close) / close) - ((close - min_pre_close) / min_pre_close)
 
-        after_closes = real_closes[self._offset:after_offset+1]
+        after_closes = real_closes[self._offset:after_offset + 1]
 
         max_after_close = max(after_closes)
 
@@ -187,6 +187,7 @@ class State:
         done |= self._offset >= self._prices.close.shape[0] - 1
 
         return reward, done
+
     def step(self, action):
         """
         Perform one step in our price, adjust offset, check for the end of prices
@@ -205,17 +206,18 @@ class State:
         after_offset = pre_offset + 120
 
         close = real_closes[self._offset]
-        pre_closes = real_closes[pre_offset:self._offset+1]
+        pre_closes = real_closes[pre_offset:self._offset + 1]
         max_pre_close = max(pre_closes)
         min_pre_close = min(pre_closes)
         pre_reward = ((max_pre_close - close) / close) - ((close - min_pre_close) / min_pre_close)
 
-        after_closes = real_closes[self._offset:after_offset+1]
+        after_closes = real_closes[self._offset:after_offset + 1]
 
         max_after_close = max(after_closes)
         min_after_close = min(after_closes)
 
         after_reward = ((max_after_close - close) / close) - ((close - min_after_close) / min_after_close)
+        print(after_reward, pre_reward)
         org_reward = after_reward - pre_reward
 
         if action == Actions.Buy:
