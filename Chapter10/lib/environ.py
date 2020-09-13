@@ -18,7 +18,8 @@ DEFAULT_COMMISSION_PERC = 0.1
 #     'open', 'percent', 'pre_dea', 'pre_dif', 'pre_macd', 'pre_macd_chng_pct', 'rsi12', 'rsi24', 'rsi6',
 #     # 'turnoverrate',
 #     'volume', 'volume_chng', 'volume_diff']
-csv_header= ['amount', 'chg', 'close', 'close_diff', 'high', 'low', 'open', 'percent', 'volume', 'volume_chng', 'volume_diff']
+csv_header = ['amount', 'chg', 'close', 'close_diff', 'high', 'low', 'open', 'percent', 'volume', 'volume_chng',
+              'volume_diff']
 
 
 class Actions(enum.Enum):
@@ -84,7 +85,7 @@ class State:
         rel_close = self._prices.close[self._offset]
         return open * (1.0 + rel_close)
 
-    def step(self, action):
+    def step_OLD(self, action):
         """
         Perform one step in our price, adjust offset, check for the end of prices
         and handle position change
@@ -114,6 +115,67 @@ class State:
 
         if self.have_position and not self.reward_on_close:
             reward += 100.0 * (close / prev_close - 1.0)
+
+        return reward, done
+
+    def step(self, action):
+        """
+        Perform one step in our price, adjust offset, check for the end of prices
+        and handle position change
+        :param action:
+        :return: reward, done
+        """
+        assert isinstance(action, Actions)
+        reward = 0.0
+        done = False
+        len_all = len(self._prices.real_close)
+        after_offset = self._offset + 60
+        after_offset = len_all if after_offset > len_all else after_offset
+        pre_offset = 0 if after_offset < 120 else after_offset - 120
+        after_offset = pre_offset + 120
+
+        close = self._prices.real_close[self._offset]
+        pre_closes = self._prices.real_close[pre_offset:self._offset]
+        max_pre_close = max(pre_closes)
+        max_pre_index = pre_closes.index(max_pre_close)
+        min_pre_close = min(pre_closes[max_pre_index:])
+        pre_reward = ((max_pre_close - close) / close) - ((close - min_pre_close) / min_pre_close)
+
+        after_closes = self._prices.real_close[self._offset:after_offset]
+
+        max_after_close = max(after_closes)
+
+        max_after_index = after_closes.index(max_after_close)
+        min_after_close = min(after_closes[:max_after_index])
+
+        after_reward = ((max_after_close - close) / close) - ((close - min_after_close) / min_after_close)
+        org_reward = after_reward - pre_reward
+
+        # after_closes = self._prices.real_close[self._offset:]
+        #
+        # after_max_close = max(pre_closes)
+        # after_min_close = min(pre_closes)
+        #
+        # close = self._cur_close()
+        if action == Actions.Buy:
+            reward = org_reward
+        elif action == Actions.Close:
+            reward = -1*org_reward
+        elif action == Actions.Skip and self.have_position:
+            reward = org_reward
+        elif action == Actions.Skip and not self.have_position:
+            reward = -1*org_reward
+
+        if action == Actions.Buy and not self.have_position:
+            self.have_position = True
+            self.open_price = close
+        elif action == Actions.Close and self.have_position:
+            done |= self.reset_on_close
+            self.have_position = False
+
+        self._offset += 1
+        done |= self._offset >= self._prices.close.shape[0] - 1
+
 
         return reward, done
 
