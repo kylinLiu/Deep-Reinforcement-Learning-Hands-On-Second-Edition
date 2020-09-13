@@ -217,7 +217,7 @@ class State:
         min_after_close = min(after_closes)
 
         after_reward = ((max_after_close - close) / close) - ((close - min_after_close) / min_after_close)
-        print(after_reward, pre_reward)
+        # print(after_reward, pre_reward)
         org_reward = after_reward + pre_reward
 
         if action == Actions.Buy:
@@ -276,7 +276,7 @@ class State:
             min_after_close = min(after_closes[:max_after_index])
 
         after_reward = ((max_after_close - close) / close) - ((close - min_after_close) / min_after_close)
-        print(after_reward, pre_reward)
+        # print(after_reward, pre_reward)
         org_reward = after_reward + pre_reward
 
         if action == Actions.Buy:
