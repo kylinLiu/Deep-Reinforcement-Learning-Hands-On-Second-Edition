@@ -136,17 +136,18 @@ class State:
 
         close = self._prices.real_close[self._offset]
         pre_closes = self._prices.real_close[pre_offset:self._offset]
-        max_pre_close = max(pre_closes)
-        max_pre_index = pre_closes.index(max_pre_close)
-        min_pre_close = min(pre_closes[max_pre_index:])
+        max_pre_close = np.max(pre_closes)
+        max_pre_index = np.argmax(pre_closes)
+        min_pre_close = np.min(pre_closes[max_pre_index:])
         pre_reward = ((max_pre_close - close) / close) - ((close - min_pre_close) / min_pre_close)
 
         after_closes = self._prices.real_close[self._offset:after_offset]
 
-        max_after_close = max(after_closes)
+        max_after_close = np.max(after_closes)
 
-        max_after_index = after_closes.index(max_after_close)
-        min_after_close = min(after_closes[:max_after_index])
+        # max_after_index = after_closes.index(max_after_close)
+        max_after_index = np.argmax(after_closes)
+        min_after_close = np.min(after_closes[:max_after_index])
 
         after_reward = ((max_after_close - close) / close) - ((close - min_after_close) / min_after_close)
         org_reward = after_reward - pre_reward
