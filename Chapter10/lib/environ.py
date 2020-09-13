@@ -188,7 +188,7 @@ class State:
 
         return reward, done
 
-    def step(self, action):
+    def step1(self, action):
         """
         Perform one step in our price, adjust offset, check for the end of prices
         and handle position change
@@ -241,7 +241,7 @@ class State:
 
         return reward, done
 
-    def step3(self, action):
+    def step(self, action):
         """
         Perform one step in our price, adjust offset, check for the end of prices
         and handle position change
