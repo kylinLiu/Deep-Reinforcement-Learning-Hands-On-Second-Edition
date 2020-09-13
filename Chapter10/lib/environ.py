@@ -139,15 +139,24 @@ class State:
         pre_closes = real_closes[pre_offset:self._offset]
         max_pre_close = max(pre_closes)
         max_pre_index = pre_closes.index(max_pre_close)
-        min_pre_close = min(pre_closes[max_pre_index:])
+        print("max_pre_index", max_pre_index)
+        print("len(pre_closes)", len(pre_closes))
+        min_pre_close = close
+        if pre_closes[max_pre_index:]:
+            min_pre_close = min(pre_closes[max_pre_index:])
         pre_reward = ((max_pre_close - close) / close) - ((close - min_pre_close) / min_pre_close)
 
         after_closes = real_closes[self._offset:after_offset]
 
         max_after_close = max(after_closes)
 
+        print("max_after_index", max_after_index)
+        print("len(after_closes)", len(after_closes))
         max_after_index = after_closes.index(max_after_close)
-        min_after_close = min(after_closes[:max_after_index])
+        min_after_close = close
+        if after_closes[max_after_index:]:
+            min_after_close = min(pre_closes[min_after_close:])
+        # min_after_close = min(after_closes[:max_after_index])
 
         after_reward = ((max_after_close - close) / close) - ((close - min_after_close) / min_after_close)
         org_reward = after_reward - pre_reward
@@ -161,11 +170,11 @@ class State:
         if action == Actions.Buy:
             reward = org_reward
         elif action == Actions.Close:
-            reward = -1*org_reward
+            reward = -1 * org_reward
         elif action == Actions.Skip and self.have_position:
             reward = org_reward
         elif action == Actions.Skip and not self.have_position:
-            reward = -1*org_reward
+            reward = -1 * org_reward
 
         if action == Actions.Buy and not self.have_position:
             self.have_position = True
@@ -176,7 +185,6 @@ class State:
 
         self._offset += 1
         done |= self._offset >= self._prices.close.shape[0] - 1
-
 
         return reward, done
 
