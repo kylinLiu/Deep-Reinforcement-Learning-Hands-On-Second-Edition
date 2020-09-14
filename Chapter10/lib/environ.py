@@ -85,7 +85,7 @@ class State:
         rel_close = self._prices.close[self._offset]
         return open * (1.0 + rel_close)
 
-    def step_OLD(self, action):
+    def step(self, action):
         """
         Perform one step in our price, adjust offset, check for the end of prices
         and handle position change
@@ -299,7 +299,7 @@ class State:
         done |= self._offset >= self._prices.close.shape[0] - 1
 
         return reward, done
-    def step(self, action):
+    def step4(self, action):
         """
         Perform one step in our price, adjust offset, check for the end of prices
         and handle position change
