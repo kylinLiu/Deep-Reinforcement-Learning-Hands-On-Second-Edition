@@ -68,7 +68,7 @@ if __name__ == "__main__":
         if done:
             break
     print(len(rewards))
-    num = -100
+    num = -1000
     rewards = rewards[num:]
     actions = actions[num:]
     closes = list(env._prices.values())[0].real_close[num:]
