@@ -19,7 +19,12 @@ DEFAULT_COMMISSION_PERC = 0.1
 #     # 'turnoverrate',
 #     'volume', 'volume_chng', 'volume_diff']
 csv_header = ['amount', 'chg', 'close', 'close_diff', 'high', 'low', 'open', 'percent', 'volume', 'volume_chng',
-              'volume_diff']
+              'volume_diff', 'dea', 'dif', 'macd', 'rsi12', 'rsi24', 'rsi6',
+              'k', 'd', 'j',
+              'boll_top',
+              'boll_mid',
+              'boll_bottom',
+              ]
 
 
 class Actions(enum.Enum):
@@ -299,6 +304,7 @@ class State:
         done |= self._offset >= self._prices.close.shape[0] - 1
 
         return reward, done
+
     def step4(self, action):
         """
         Perform one step in our price, adjust offset, check for the end of prices
@@ -337,13 +343,13 @@ class State:
         # print(after_reward, pre_reward)
         org_reward = after_reward + pre_reward
         fee = 0.0002
-        if action == Actions.Buy and  not self.have_position:
+        if action == Actions.Buy and not self.have_position:
             reward = org_reward - fee
-        if action == Actions.Buy and  self.have_position:
+        if action == Actions.Buy and self.have_position:
             reward = fee
-        elif action == Actions.Close and  self.have_position:
+        elif action == Actions.Close and self.have_position:
             reward = -1 * org_reward - fee
-        elif action == Actions.Close and  not self.have_position:
+        elif action == Actions.Close and not self.have_position:
             reward = fee
         elif action == Actions.Skip and self.have_position:
             reward = fee
